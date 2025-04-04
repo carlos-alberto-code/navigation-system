@@ -1,4 +1,4 @@
-from navigation_system.navigation.interface import ModuleView, EventView, Service, Repository
+from navigation_system.interface import ModuleView, EventView, Service, Repository
 
 
 class Controller:
@@ -7,7 +7,7 @@ class Controller:
         self,
         view_class: type[ModuleView],
         event_class: type[EventView],
-        service_classes: dict[type[Service], tuple[type[Repository]]]
+        service_classes: dict[type[Service], list[type[Repository]]]
     ) -> None:
         self._view_class = view_class
         self._event_class = event_class

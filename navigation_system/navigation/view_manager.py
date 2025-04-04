@@ -1,5 +1,5 @@
 from navigation_system.navigation.controller import Controller
-from navigation_system.navigation.interface.module_view import ModuleView
+from navigation_system.interface.module_view import ModuleView
 
 
 class ViewManager:

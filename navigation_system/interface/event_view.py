@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
-from navigation_system.navigation.interface.service import Service
-from navigation_system.navigation.interface.module_view import ModuleView
+from navigation_system.interface.service import Service
+from navigation_system.interface.module_view import ModuleView
 
 
 class EventView(ABC):

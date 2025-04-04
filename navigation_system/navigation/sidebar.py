@@ -8,7 +8,7 @@ from navigation_system.navigation.selectable import Selectable
 
 #     def __init__(
 #         self,
-#         title: str, 
+#         title: str,
 #         items: list[str],
 #         trailing: list[ft.Control],
 #         on_select=None,
@@ -45,7 +45,6 @@ from navigation_system.navigation.selectable import Selectable
 
 
 class Sidebar(ft.NavigationDrawer):
-    def __init__(self):
+    def __init__(self, view_names: list[str]):
         super().__init__(bgcolor=ft.Colors.BLUE_GREY_900,)
-        self._items: list[Selectable] = []
-        
+        self.view_names: list[str] = view_names

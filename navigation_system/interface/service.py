@@ -1,6 +1,6 @@
 from abc import ABC
 
-from navigation_system.navigation.interface.repository import Repository
+from navigation_system.interface.repository import Repository
 
 
 class Service(ABC):
