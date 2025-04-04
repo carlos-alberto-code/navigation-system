@@ -1,9 +1,9 @@
 import flet as ft
+
+from typing import Callable
 from dataclasses import dataclass
-from typing import Callable, Optional
 
 from navigation_system.widget.switch import Switch
-from navigation_system.widget.icon_text import IconText
 from navigation_system.widget.selectable import Selectable
 
 
@@ -72,9 +72,9 @@ class Sidebar(ft.Container):
         company_name: str,
         icon_company: ft.Icons,
         sidebar_content: SidebarContent,
-        on_select: Optional[Callable] = None,
-        default_selected: Optional[str] = None,
-        width: int = 260,
+        on_select: Callable | None = None,
+        default_selected: str | None = None,
+        width: int = 250,
         bgcolor=ft.Colors.BLUE_GREY_900,
     ) -> None:
         self._company_name = company_name
@@ -107,7 +107,7 @@ class Sidebar(ft.Container):
             width=width,
             bgcolor=bgcolor,
             content=self._build_layout(),
-            padding=0,
+            padding=10,
         )
 
     def _create_selectables(self):
@@ -133,31 +133,6 @@ class Sidebar(ft.Container):
         # Ejecutamos la lógica entrante de selección
         if self._on_select:
             self._on_select(event)
-
-    def _build_header(self) -> ft.Container:
-        """Construye el encabezado del sidebar."""
-        return ft.Container(
-            content=ft.Row(
-                controls=[
-                    ft.Icon(
-                        name=self._icon_company,
-                        color=ft.Colors.WHITE,
-                        size=24,
-                    ),
-                    ft.Text(
-                        value=self._company_name,
-                        color=ft.Colors.WHITE,
-                        weight=ft.FontWeight.BOLD,
-                        size=18,
-                    ),
-                ],
-                spacing=10,
-                alignment=ft.MainAxisAlignment.START,
-            ),
-            padding=ft.padding.all(15),
-            bgcolor=ft.Colors.with_opacity(0.2, ft.Colors.BLACK),
-            margin=0,
-        )
 
     def _build_footer(self) -> ft.Container:
         """Construye el pie de página del sidebar."""
@@ -195,8 +170,6 @@ class Sidebar(ft.Container):
 
     def _build_layout(self) -> ft.Column:
         """Construye la estructura completa del sidebar."""
-        # Crear el encabezado
-        header = self._build_header()
         
         # Crear los grupos
         groups = [self._build_group(group) for group in self._sidebar_content.groups]
@@ -218,7 +191,6 @@ class Sidebar(ft.Container):
         # Ensamblar todo
         return ft.Column(
             controls=[
-                header,
                 content,
                 footer,
             ],

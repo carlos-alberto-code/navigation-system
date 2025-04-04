@@ -51,7 +51,7 @@ class RoutinesView(ModuleView):
                     offset=ft.Offset(0, 2),
                 ),
             ),
-            padding=20,
+            # padding=20,
             bgcolor=ft.Colors.BLUE_GREY_50,
             expand=True,
         )
@@ -76,7 +76,7 @@ class ExercisesView(ModuleView):
                     offset=ft.Offset(0, 2),
                 ),
             ),
-            padding=20,
+            # padding=20,
             bgcolor=ft.Colors.BLUE_GREY_50,
             expand=True,
         )
@@ -139,6 +139,17 @@ def main(page: ft.Page):
     page.theme_mode = ft.ThemeMode.LIGHT
     page.padding = 0
     page.bgcolor = ft.Colors.BLUE_GREY_50
+
+    page.appbar = ft.AppBar(
+        leading=ft.Row(
+            controls=[
+                ft.Container(width=10),
+                ft.Icon(ft.Icons.RUN_CIRCLE, size=30, color=ft.Colors.WHITE),
+                ft.Text("Jumpingkids", size=20, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+            ]
+        ),
+        bgcolor=ft.Colors.BLUE_GREY_900,
+    )
 
     # Definir constantes para los nombres de módulos
     INICIO = "Inicio"
