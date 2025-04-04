@@ -3,106 +3,154 @@ import flet as ft
 from navigation_system.widget import Sidebar
 from navigation_system.manager import ViewManager, Controller
 from navigation_system.interface import ModuleView, EventView, Service, Repository
-from navigation_system.widget.icon_text import IconText
+from navigation_system.widget.sidebar import SidebarContent, SidebarGroup, SidebarItem
+
 
 # Ejemplo de implementaciones concretas
-
-
 class HomeView(ModuleView):
     def __init__(self):
         super().__init__(
-            content=ft.Column([
-                ft.Text("Página de Inicio", size=24),
-                ft.Text("Bienvenido a la aplicación"),
-            ]),
+            content=ft.Container(
+                content=ft.Column([
+                    ft.Text("Página de Inicio", size=24, weight=ft.FontWeight.BOLD),
+                    ft.Container(height=20),
+                    ft.Text("Bienvenido a la aplicación", size=16),
+                ]),
+                padding=20,
+                bgcolor=ft.Colors.WHITE,
+                border_radius=8,
+                shadow=ft.BoxShadow(
+                    spread_radius=1,
+                    blur_radius=10,
+                    color=ft.Colors.with_opacity(0.1, ft.Colors.BLACK),
+                    offset=ft.Offset(0, 2),
+                ),
+            ),
             padding=20,
+            bgcolor=ft.Colors.BLUE_GREY_50,
+            expand=True,
         )
 
 
-class InventoryView(ModuleView):
+class RoutinesView(ModuleView):
     def __init__(self):
         super().__init__(
-            content=ft.Column([
-                ft.Text("Inventario", size=24),
-                ft.Text("Gestión de productos"),
-            ]),
+            content=ft.Container(
+                content=ft.Column([
+                    ft.Text("Rutinas", size=24, weight=ft.FontWeight.BOLD),
+                    ft.Container(height=20),
+                    ft.Text("Gestión de rutinas de ejercicio", size=16),
+                ]),
+                padding=20,
+                bgcolor=ft.Colors.WHITE,
+                border_radius=8,
+                shadow=ft.BoxShadow(
+                    spread_radius=1,
+                    blur_radius=10,
+                    color=ft.Colors.with_opacity(0.1, ft.Colors.BLACK),
+                    offset=ft.Offset(0, 2),
+                ),
+            ),
             padding=20,
+            bgcolor=ft.Colors.BLUE_GREY_50,
+            expand=True,
         )
 
 
-class SalesView(ModuleView):
+class ExercisesView(ModuleView):
     def __init__(self):
         super().__init__(
-            content=ft.Column([
-                ft.Text("Ventas", size=24),
-                ft.Text("Registro y gestión de ventas"),
-            ]),
+            content=ft.Container(
+                content=ft.Column([
+                    ft.Text("Ejercicios", size=24, weight=ft.FontWeight.BOLD),
+                    ft.Container(height=20),
+                    ft.Text("Biblioteca de ejercicios", size=16),
+                ]),
+                padding=20,
+                bgcolor=ft.Colors.WHITE,
+                border_radius=8,
+                shadow=ft.BoxShadow(
+                    spread_radius=1,
+                    blur_radius=10,
+                    color=ft.Colors.with_opacity(0.1, ft.Colors.BLACK),
+                    offset=ft.Offset(0, 2),
+                ),
+            ),
             padding=20,
+            bgcolor=ft.Colors.BLUE_GREY_50,
+            expand=True,
         )
 
 
+# Eventos para cada vista
 class HomeEvents(EventView):
     def __init__(self, view: ModuleView, services: list[Service]) -> None:
         super().__init__(view, services)
 
     def _connect_events(self) -> None:
-        # Conectar eventos si los hubiera
         pass
 
 
-class InventoryEvents(EventView):
+class RoutinesEvents(EventView):
     def __init__(self, view: ModuleView, services: list[Service]) -> None:
         super().__init__(view, services)
 
     def _connect_events(self) -> None:
-        # Conectar eventos si los hubiera
         pass
 
 
-class SalesEvents(EventView):
+class ExercisesEvents(EventView):
     def __init__(self, view: ModuleView, services: list[Service]) -> None:
         super().__init__(view, services)
 
     def _connect_events(self) -> None:
-        # Conectar eventos si los hubiera
         pass
 
 
+# Repositorios simples
 class HomeRepository(Repository):
     pass
 
 
-class InventoryRepository(Repository):
+class RoutinesRepository(Repository):
     pass
 
 
-class SalesRepository(Repository):
+class ExercisesRepository(Repository):
     pass
 
 
+# Servicios para cada módulo
 class HomeService(Service):
     pass
 
 
-class InventoryService(Service):
+class RoutinesService(Service):
     pass
 
 
-class SalesService(Service):
+class ExercisesService(Service):
     pass
 
-# Ejemplo de uso en una aplicación Flet
 
-
+# Función principal de la aplicación
 def main(page: ft.Page):
-    page.title = "Ejemplo de Navegación"
+    page.title = "Jumpingkids"
     page.theme_mode = ft.ThemeMode.LIGHT
     page.padding = 0
+    page.bgcolor = ft.Colors.BLUE_GREY_50
 
     # Definir constantes para los nombres de módulos
     INICIO = "Inicio"
-    INVENTARIO = "Inventario"
-    VENTAS = "Ventas"
+    RUTINAS = "Rutinas"
+    EJERCICIOS = "Ejercicios"
+    MY_KIDS = "My Kids"
+    NUTRICIONISTAS = "Nutricionistas"
+    ENTRENADORES = "Entrenadores"
+    MENSAJES = "Mensajes"
+    ESTADISTICAS = "Estadísticas"
+    SUSCRIPCION = "Suscripción"
+    CONFIGURACION = "Configuración"
 
     # Configurar el gestor de vistas
     view_manager = ViewManager()
@@ -116,85 +164,97 @@ def main(page: ft.Page):
         }
     )
 
-    view_manager[INVENTARIO] = Controller(
-        view_class=InventoryView,
-        event_class=InventoryEvents,
+    view_manager[RUTINAS] = Controller(
+        view_class=RoutinesView,
+        event_class=RoutinesEvents,
         service_classes={
-            InventoryService: [InventoryRepository]
+            RoutinesService: [RoutinesRepository]
         }
     )
 
-    view_manager[VENTAS] = Controller(
-        view_class=SalesView,
-        event_class=SalesEvents,
+    view_manager[EJERCICIOS] = Controller(
+        view_class=ExercisesView,
+        event_class=ExercisesEvents,
         service_classes={
-            SalesService: [SalesRepository]
+            ExercisesService: [ExercisesRepository]
         }
     )
 
-    # Configurar íconos para cada módulo
-    modulos_iconos = {
-        "Rutinas": ft.Icons.RUN_CIRCLE,
-        "Ejercicios": ft.Icons.FITNESS_CENTER,
-        "My Kids": ft.Icons.PERSON,
-        "Suscripción": ft.Icons.SUBSCRIPTIONS,
-        "Configuración": ft.Icons.SETTINGS,
-        "Nutricionistas": ft.Icons.FOOD_BANK,
-        "Entrenadores": ft.Icons.FITNESS_CENTER,
-        "Mensajes": ft.Icons.MESSAGE,
-        "Estadísticas": ft.Icons.DATASET_SHARP,
-    }
+    # Configuración del contenido del sidebar
+    sidebar_content = SidebarContent(
+        groups=[
+            SidebarGroup(
+                title="Principal",
+                items=[
+                    SidebarItem(name=INICIO, icon=ft.Icons.HOME),
+                    SidebarItem(name=RUTINAS, icon=ft.Icons.RUN_CIRCLE),
+                    SidebarItem(name=EJERCICIOS, icon=ft.Icons.FITNESS_CENTER),
+                    SidebarItem(name=MY_KIDS, icon=ft.Icons.PERSON),
+                ]
+            ),
+            SidebarGroup(
+                title="Profesionales",
+                items=[
+                    SidebarItem(name=NUTRICIONISTAS, icon=ft.Icons.FOOD_BANK),
+                    SidebarItem(name=ENTRENADORES, icon=ft.Icons.FITNESS_CENTER),
+                ]
+            ),
+            SidebarGroup(
+                title="Comunidad",
+                items=[
+                    SidebarItem(name=MENSAJES, icon=ft.Icons.MESSAGE),
+                    SidebarItem(name=ESTADISTICAS, icon=ft.Icons.DATASET_SHARP),
+                ]
+            ),
+            SidebarGroup(
+                title="Cuenta",
+                items=[
+                    SidebarItem(name=SUSCRIPCION, icon=ft.Icons.PAYMENT),
+                    SidebarItem(name=CONFIGURACION, icon=ft.Icons.SETTINGS),
+                ]
+            ),
+        ]
+    )
 
     # Variable para almacenar la vista actual
     current_view = view_manager[INICIO]  # Vista inicial
+    content_container = ft.Container(content=current_view, expand=True)
 
     # Función para manejar la selección en la barra lateral
     def on_view_selected(event: ft.ControlEvent):
-        # module_name = event.control.content.controls[1].value
-        # current_view = view_manager[module_name]
-        # main_content.content = current_view
-        # page.update()
-        print("Nada")
+        nonlocal current_view, content_container
+        
+        # Obtener el nombre del ítem seleccionado
+        selected_item_name = event.control.content.controls[1].value
+        
+        # Solo cambiar la vista si está registrada en el ViewManager
+        if selected_item_name in view_manager.keys():
+            current_view = view_manager[selected_item_name]
+            content_container.content = current_view
+            page.update()
 
     # Crear la barra lateral
     sidebar = Sidebar(
         company_name="Jumpingkids",
         icon_company=ft.Icons.RUN_CIRCLE,
-        module_names_and_icons=modulos_iconos,
+        sidebar_content=sidebar_content,
         on_select=on_view_selected,
-        # default_selected=INICIO,
-    )
-
-    # Contenedor para la vista actual
-    main_content = view_manager[INICIO]
-
-    page.appbar = ft.AppBar(
-        leading=ft.Row(
-            controls=[
-                ft.Container(width=10),
-                IconText(
-                    "Jumpingkids",
-                    icon=ft.Icons.RUN_CIRCLE,
-                    size=20,
-                    selected_color=ft.Colors.WHITE,
-                    default_color=ft.Colors.WHITE70,
-                ),
-            ]
-        ),
-        bgcolor=ft.Colors.BLUE_GREY_900,
+        default_selected=INICIO,
     )
 
     # Estructura principal de la aplicación
     page.add(
         ft.Row(
-            [
+            controls=[
                 sidebar,
-                main_content,
+                content_container,
             ],
             expand=True,
+            spacing=0,
         )
     )
 
 
 # Lanzar la aplicación
-ft.app(target=main)
+if __name__ == "__main__":
+    ft.app(target=main)

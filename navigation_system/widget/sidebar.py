@@ -1,46 +1,68 @@
 import flet as ft
+from dataclasses import dataclass
+from typing import Callable, Optional
 
 from navigation_system.widget.switch import Switch
 from navigation_system.widget.icon_text import IconText
 from navigation_system.widget.selectable import Selectable
 
 
+@dataclass
+class SidebarItem:
+    """Clase para representar un elemento de la barra lateral."""
+    name: str
+    icon: ft.Icons
+
+
+@dataclass
+class SidebarGroup:
+    """Clase para representar una sección de la barra lateral."""
+    title: str
+    items: list[SidebarItem]
+
+
+@dataclass
+class SidebarContent:
+    """Clase para representar el contenido de la barra lateral."""
+    groups: list[SidebarGroup]
+
+
 class Sidebar(ft.Container):
     """
-    Un componente de barra lateral para navegación entre vistas.
+    Un componente de barra lateral mejorado para navegación entre vistas.
 
-    Proporciona una interfaz visual para navegar entre diferentes vistas
-    de la aplicación, manteniendo el estado de selección y desencadenando
-    eventos cuando el usuario selecciona una vista.
+    Proporciona una interfaz visual organizada y atractiva para navegar entre diferentes vistas
+    de la aplicación, con soporte para agrupaciones de ítems, encabezado y pie de página.
 
     Ejemplo de uso:
     ```python
-    # Definir los nombres de los módulos como constantes
-    INVENTARIO = "Inventario"
-    VENTAS = "Ventas"
-
-    # Configurar el ViewManager
-    view_manager = ViewManager()
-    view_manager[INVENTARIO] = Controller(...)
-    view_manager[VENTAS] = Controller(...)
-
-    # Crear el diccionario de íconos
-    modulos_iconos = {
-        INVENTARIO: ft.Icons.INVENTORY,
-        VENTAS: ft.Icons.POINT_OF_SALE
-    }
-
-    # Función para manejar la selección
-    def on_view_selected(e, view_name):
-        # Cargar la vista seleccionada
-        main_content.content = view_manager[view_name]
-        page.update()
+    # Configurar el contenido del sidebar
+    sidebar_content = SidebarContent(
+        groups=[
+            SidebarGroup(
+                title="Principal",
+                items=[
+                    SidebarItem(name="Inicio", icon=ft.Icons.HOME),
+                    SidebarItem(name="Inventario", icon=ft.Icons.INVENTORY),
+                ]
+            ),
+            SidebarGroup(
+                title="Administración",
+                items=[
+                    SidebarItem(name="Ventas", icon=ft.Icons.POINT_OF_SALE),
+                    SidebarItem(name="Configuración", icon=ft.Icons.SETTINGS),
+                ]
+            ),
+        ]
+    )
 
     # Crear el sidebar
     sidebar = Sidebar(
-        title="Mi Aplicación",
-        items_content=modulos_iconos,
+        company_name="Mi Empresa",
+        icon_company=ft.Icons.BUSINESS,
+        sidebar_content=sidebar_content,
         on_select=on_view_selected,
+        default_selected="Inicio",
     )
     ```
     """
@@ -49,17 +71,19 @@ class Sidebar(ft.Container):
         self,
         company_name: str,
         icon_company: ft.Icons,
-        module_names_and_icons: dict[str, ft.Icons],
-        on_select=None,
-        default_selected: str | None = None,
-        width: int = 250,
+        sidebar_content: SidebarContent,
+        on_select: Optional[Callable] = None,
+        default_selected: Optional[str] = None,
+        width: int = 260,
         bgcolor=ft.Colors.BLUE_GREY_900,
     ) -> None:
         self._company_name = company_name
         self._icon_company = icon_company
-        self._module_names_and_icons = module_names_and_icons
+        self._sidebar_content = sidebar_content
         self._on_select = on_select
         self._default_selected = default_selected
+        self._width = width
+        self._bgcolor = bgcolor
 
         # Crear los elementos seleccionables para cada vista
         self._selectables: dict[str, Selectable] = {}
@@ -72,33 +96,36 @@ class Sidebar(ft.Container):
             self._selectables[default_selected].selected = True
             # Pasar al switch el elemento seleccionado por defecto
             self._switch = Switch(self._selectables[default_selected])
-
+        elif self._selectables:
+            # Si no hay elemento por defecto pero existen elementos, seleccionar el primero
+            first_item_name = list(self._selectables.keys())[0]
+            self._selectables[first_item_name].selected = True
+            self._switch = Switch(self._selectables[first_item_name])
 
         # Construir la interfaz
         super().__init__(
             width=width,
-            padding=10,
             bgcolor=bgcolor,
             content=self._build_layout(),
+            padding=0,
         )
 
     def _create_selectables(self):
         """Crea los elementos seleccionables para cada vista."""
-        self._selectables = {
-            module_name: Selectable(
-                label=module_name,
-                icon=icon,
-                on_click=self._envolve_on_select_event,
-            )
-            for module_name, icon in self._module_names_and_icons.items()
-        }
+        for group in self._sidebar_content.groups:
+            for item in group.items:
+                self._selectables[item.name] = Selectable(
+                    label=item.name,
+                    icon=item.icon,
+                    on_click=self._envolve_on_select_event,
+                )
 
     def _envolve_on_select_event(self, event: ft.ControlEvent):
-        """Maneja el evento de selección de un elemento. Envuelve el evento de entrada que maneja la lógica de cambio de vista. Mientras que internamente maneja la lógica de selección correspondiente al Sidebar."""
+        """Maneja el evento de selección de un elemento."""
         # Capturamos el control que disparó el evento
         selectable: Selectable = event.control
         # Desmarcamos el Selectable actual
-        self._switch.current_selectable.selected
+        self._switch.current_selectable.selected = False
         # Marcamos el nuevo Selectable
         selectable.selected = True
         # Actualizamos el switch
@@ -107,13 +134,94 @@ class Sidebar(ft.Container):
         if self._on_select:
             self._on_select(event)
 
-    def _build_layout(self) -> ft.Column:
-        """Construye la barra lateral."""
-        return ft.Column(
-            controls=[
-                *self._selectables.values(),
-            ],
-            alignment=ft.MainAxisAlignment.CENTER,
+    def _build_header(self) -> ft.Container:
+        """Construye el encabezado del sidebar."""
+        return ft.Container(
+            content=ft.Row(
+                controls=[
+                    ft.Icon(
+                        name=self._icon_company,
+                        color=ft.Colors.WHITE,
+                        size=24,
+                    ),
+                    ft.Text(
+                        value=self._company_name,
+                        color=ft.Colors.WHITE,
+                        weight=ft.FontWeight.BOLD,
+                        size=18,
+                    ),
+                ],
+                spacing=10,
+                alignment=ft.MainAxisAlignment.START,
+            ),
+            padding=ft.padding.all(15),
+            bgcolor=ft.Colors.with_opacity(0.2, ft.Colors.BLACK),
+            margin=0,
         )
 
+    def _build_footer(self) -> ft.Container:
+        """Construye el pie de página del sidebar."""
+        return ft.Container(
+            content=ft.Text(
+                value=f"Versión 1.0.0 • © 2025 {self._company_name}",
+                color=ft.Colors.with_opacity(0.5, ft.Colors.WHITE),
+                size=12,
+                text_align=ft.TextAlign.CENTER,
+            ),
+            padding=ft.padding.all(15),
+            border=ft.border.only(top=ft.BorderSide(1, ft.Colors.with_opacity(0.1, ft.Colors.WHITE))),
+        )
     
+    def _build_group(self, group: SidebarGroup) -> ft.Column:
+        """Construye un grupo de ítems para el sidebar."""
+        items = [self._selectables[item.name] for item in group.items]
+        
+        return ft.Column(
+            controls=[
+                ft.Container(
+                    content=ft.Text(
+                        value=group.title.upper(),
+                        color=ft.Colors.with_opacity(0.5, ft.Colors.WHITE),
+                        size=12,
+                        weight=ft.FontWeight.BOLD,
+                    ),
+                    padding=ft.padding.only(left=16, top=12, bottom=4),
+                ),
+                *items,
+            ],
+            spacing=0,
+            tight=True,
+        )
+
+    def _build_layout(self) -> ft.Column:
+        """Construye la estructura completa del sidebar."""
+        # Crear el encabezado
+        header = self._build_header()
+        
+        # Crear los grupos
+        groups = [self._build_group(group) for group in self._sidebar_content.groups]
+        
+        # Crear el contenido principal (área scrollable)
+        content = ft.Container(
+            content=ft.Column(
+                controls=groups,
+                spacing=0,
+                scroll=ft.ScrollMode.AUTO,
+            ),
+            expand=True,
+            padding=ft.padding.symmetric(vertical=8),
+        )
+        
+        # Crear el pie de página
+        footer = self._build_footer()
+        
+        # Ensamblar todo
+        return ft.Column(
+            controls=[
+                header,
+                content,
+                footer,
+            ],
+            spacing=0,
+            expand=True,
+        )
