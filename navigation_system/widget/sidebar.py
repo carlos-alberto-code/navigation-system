@@ -77,10 +77,9 @@ class Sidebar(ft.Container):
         # Construir la interfaz
         super().__init__(
             width=width,
-            padding=15,
-            expand=True,
+            padding=10,
             bgcolor=bgcolor,
-            content=self._build_layout()
+            content=self._build_layout(),
         )
 
     def _create_selectables(self):
@@ -112,18 +111,9 @@ class Sidebar(ft.Container):
         """Construye la barra lateral."""
         return ft.Column(
             controls=[
-                # Título: Nombre e ícono de la empresa
-                IconText(
-                    label=self._company_name,
-                    icon=self._icon_company,
-                    size=18,
-                ),
-                ft.Divider(color=ft.Colors.WHITE, thickness=0.5),
-
-                # Elementos de navegación
                 *self._selectables.values(),
             ],
-            alignment=ft.MainAxisAlignment.START,
+            alignment=ft.MainAxisAlignment.CENTER,
         )
 
     

@@ -30,10 +30,6 @@ class Selectable(ft.Container):
         )
     
     @property
-    def label(self) -> str:
-        return self._label
-    
-    @property
     def selected(self) -> bool:
         return self._selected
 
