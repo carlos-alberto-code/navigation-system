@@ -1,4 +1,4 @@
-from navigation_system.navigation.controller import Controller
+from navigation_system.manager.controller import Controller
 from navigation_system.interface.module_view import ModuleView
 
 

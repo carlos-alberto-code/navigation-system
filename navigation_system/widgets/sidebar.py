@@ -1,7 +1,7 @@
 import flet as ft
 
-from navigation_system.navigation.icon_text import IconText
-from navigation_system.navigation.selectable import Selectable
+from navigation_system.widgets.icon_text import IconText
+from navigation_system.widgets.selectable import Selectable
 
 
 # class Sidebar(ft.Container):

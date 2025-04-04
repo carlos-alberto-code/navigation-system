@@ -1,4 +1,4 @@
-from navigation_system.navigation.selectable import Selectable
+from navigation_system.widgets.selectable import Selectable
 
 
 class Switch:
