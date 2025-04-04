@@ -51,5 +51,5 @@ class IconText(ft.Row):
         color = self._selected_color if value else self._default_color
         self._icon_control.color = color
         self._text_control.color = color
-        self.update()
+        # self.update()
         
