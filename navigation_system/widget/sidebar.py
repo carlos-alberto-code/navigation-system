@@ -143,6 +143,7 @@ class Sidebar(ft.Container):
         """
         selectable: Selectable = event.control
         self._switch.current_selectable = selectable
+        self.update()
         if self._on_select:
             self._on_select(event)
 
