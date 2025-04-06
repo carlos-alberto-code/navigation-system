@@ -102,6 +102,7 @@ class Sidebar(ft.Container):
             bgcolor=bgcolor,
             content=self._build_layout(),
             padding=10,
+            expand=True,
         )
 
     def _create_selectables(self):
