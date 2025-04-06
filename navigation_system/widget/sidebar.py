@@ -183,8 +183,6 @@ class Sidebar(ft.Container):
     def _build_layout(self) -> ft.Column:
         """
         Construye la estructura completa del sidebar.
-
-        En la parte 
         """
 
         # Crear los grupos
