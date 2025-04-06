@@ -1,10 +1,9 @@
 import flet as ft
 
-from typing import Callable
 from dataclasses import dataclass
 
-from navigation_system.widget.switch import Switch
-from navigation_system.widget.selectable import Selectable
+from navigation_system.widget.sidebar.switch import Switch
+from navigation_system.widget.sidebar.selectable import Selectable
 
 
 @dataclass
@@ -71,7 +70,7 @@ class Sidebar(ft.Container):
         self,
         sidebar_content: SidebarContent,
         company_name: str | None = None,
-        on_select: Callable | None = None,
+        on_select= None,
         default_selected: str | None = None,
         width: int = 250,
         bgcolor=ft.Colors.BLUE_GREY_900,
@@ -92,13 +91,9 @@ class Sidebar(ft.Container):
             if default_selected not in self._selectables:
                 raise ValueError(
                     "El módulo por defecto no existe en la barra lateral")
-            self._selectables[default_selected].is_selected = True
-            # Pasar al switch el elemento seleccionado por defecto
             self._switch = Switch(self._selectables[default_selected])
         elif self._selectables:
-            # Si no hay elemento por defecto pero existen elementos, seleccionar el primero
             first_item_name = list(self._selectables.keys())[0]
-            self._selectables[first_item_name].is_selected = True
             self._switch = Switch(self._selectables[first_item_name])
 
         # Construir la interfaz

@@ -1,6 +1,6 @@
 import flet as ft
 
-from navigation_system.widget.icon_text import IconText
+from navigation_system.widget.sidebar.icon_text import IconText
 
 
 class Selectable(ft.Container):
