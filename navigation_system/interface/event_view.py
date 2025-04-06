@@ -5,6 +5,11 @@ from navigation_system.interface.module_view import ModuleView
 
 
 class EventView(ABC):
+    """
+    Clase base de la cual deben heredar todas las clases que implementarán la lógica de eventos de la vista. 
+
+    La lógica de eventos de la vista se encarga de conectar los eventos de la vista con los servicios.
+    """
 
     @abstractmethod
     def __init__(self, view: ModuleView, services: list[Service]) -> None:
