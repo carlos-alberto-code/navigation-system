@@ -15,12 +15,12 @@ class Selectable(ft.Container):
         label: str,
         icon: ft.Icons,
         on_click=None,
-        selected_color: ft.Colors = ft.Colors.BLUE_GREY_800,
-        hover_color: ft.Colors = ft.Colors.BLUE_GREY_700,
+        selected_color: ft.Colors = ft.Colors.BLUE_GREY_600,
+        hover_color: ft.Colors = ft.Colors.BLUE_GREY_800,
     ) -> None:
         self._label = label
         self._icon_text = IconText(label, icon)
-        self._selected = False
+        self._is_selected = False
         self._on_click = on_click
         self._selected_color = selected_color
         self._hover_color = hover_color
@@ -31,37 +31,36 @@ class Selectable(ft.Container):
             on_click=self._on_click_envolve,
             on_hover=self._on_hover,
             ink=True,
-            bgcolor=None,
             border_radius=8,
             animate=ft.animation.Animation(300, ft.AnimationCurve.EASE_OUT),
         )
     
     @property
-    def selected(self) -> bool:
-        return self._selected
+    def is_selected(self) -> bool:
+        return self._is_selected
 
-    @selected.setter
-    def selected(self, value: bool) -> None:
+    @is_selected.setter
+    def is_selected(self, value: bool) -> None:
         """Al seleccionar el control, se cambia el color del ``ft.Container`` y el color del ``IconText``."""
-        self._selected = value
+        self._is_selected = value
         self.bgcolor = self._selected_color if value else None
         self._icon_text.selected = value
         
         # Añadir un indicador visual lateral cuando está seleccionado
         if value:
             self.border = ft.border.only(
-                left=ft.BorderSide(3, ft.Colors.LIGHT_BLUE_300)
+                left=ft.BorderSide(10, ft.Colors.LIGHT_BLUE_300)
             )
         else:
             self.border = None
 
     def _on_click_envolve(self, event: ft.ControlEvent):
-        self.selected = True
+        self.is_selected = True
         if self._on_click:
             self._on_click(event)
     
     def _on_hover(self, event: ft.ControlEvent):
         """Cambia el color de fondo al pasar el cursor sobre el elemento."""
-        if not self._selected:
+        if not self._is_selected:
             self.bgcolor = self._hover_color if event.data == "true" else None
             self.update()
