@@ -69,16 +69,14 @@ class Sidebar(ft.Container):
 
     def __init__(
         self,
-        company_name: str,
-        icon_company: ft.Icons,
         sidebar_content: SidebarContent,
+        company_name: str | None = None,
         on_select: Callable | None = None,
         default_selected: str | None = None,
         width: int = 250,
         bgcolor=ft.Colors.BLUE_GREY_900,
     ) -> None:
         self._company_name = company_name
-        self._icon_company = icon_company
         self._sidebar_content = sidebar_content
         self._on_select = on_select
         self._default_selected = default_selected
@@ -92,14 +90,15 @@ class Sidebar(ft.Container):
         # Seleccionar el elemento por defecto si se especificó
         if default_selected:
             if default_selected not in self._selectables:
-                raise ValueError("El módulo por defecto no existe en la barra lateral")
-            self._selectables[default_selected].selected = True
+                raise ValueError(
+                    "El módulo por defecto no existe en la barra lateral")
+            self._selectables[default_selected].is_selected = True
             # Pasar al switch el elemento seleccionado por defecto
             self._switch = Switch(self._selectables[default_selected])
         elif self._selectables:
             # Si no hay elemento por defecto pero existen elementos, seleccionar el primero
             first_item_name = list(self._selectables.keys())[0]
-            self._selectables[first_item_name].selected = True
+            self._selectables[first_item_name].is_selected = True
             self._switch = Switch(self._selectables[first_item_name])
 
         # Construir la interfaz
@@ -111,26 +110,39 @@ class Sidebar(ft.Container):
         )
 
     def _create_selectables(self):
-        """Crea los elementos seleccionables para cada vista."""
-        for group in self._sidebar_content.groups:
-            for item in group.items:
-                self._selectables[item.name] = Selectable(
-                    label=item.name,
-                    icon=item.icon,
-                    on_click=self._envolve_on_select_event,
-                )
+        """
+        Crea los elementos seleccionables para el sistema de navegación.
+
+        Transforma los elementos definidos en `sidebar_content` en widgets interactivos
+        (objetos Selectable) que pueden ser seleccionados por el usuario. Cada elemento
+        se guarda en un diccionario usando su nombre como clave para facilitar su acceso
+        posterior, especialmente al cambiar entre vistas.
+
+        El método configura cada elemento con:
+        - La etiqueta visual (nombre del ítem)
+        - El ícono correspondiente
+        - El manejador de eventos para la navegación
+        """
+        self._selectables = {
+            item.name: Selectable(
+                label=item.name,
+                icon=item.icon,
+                on_click=self._envolve_on_select_event,
+            )
+            for group in self._sidebar_content.groups
+            for item in group.items
+        }
 
     def _envolve_on_select_event(self, event: ft.ControlEvent):
-        """Maneja el evento de selección de un elemento."""
-        # Capturamos el control que disparó el evento
+        """
+        El método envuelve un método (evento) entrante para manejar la selección de vistas de forma integral. Externamente el evento debe manejar la lógica de cambio de vista, mientras que este envoltorio se encargar de la lógica estética de selección.
+
+        - Se captura el control que disparó el evento (``Selectable``).
+        - Hacemos uso del Switch para cambiar el elemento seleccionado. El ``Switch`` se encarga de desmarcar el anterior y marcar el nuevo, pero no actualiza la vista.
+        - Llamamos al evento de selección (externo), si está definido para que ejecute su lógica.
+        """
         selectable: Selectable = event.control
-        # Desmarcamos el Selectable actual
-        self._switch.current_selectable.selected = False
-        # Marcamos el nuevo Selectable
-        selectable.selected = True
-        # Actualizamos el switch
         self._switch.current_selectable = selectable
-        # Ejecutamos la lógica entrante de selección
         if self._on_select:
             self._on_select(event)
 
@@ -146,11 +158,10 @@ class Sidebar(ft.Container):
             padding=ft.padding.all(15),
             border=ft.border.only(top=ft.BorderSide(1, ft.Colors.with_opacity(0.1, ft.Colors.WHITE))),
         )
-    
+
     def _build_group(self, group: SidebarGroup) -> ft.Column:
         """Construye un grupo de ítems para el sidebar."""
         items = [self._selectables[item.name] for item in group.items]
-        
         return ft.Column(
             controls=[
                 ft.Container(
@@ -164,16 +175,23 @@ class Sidebar(ft.Container):
                 ),
                 *items,
             ],
-            spacing=0,
+            spacing=0, 
             tight=True,
         )
 
     def _build_layout(self) -> ft.Column:
-        """Construye la estructura completa del sidebar."""
-        
+        """
+        Construye la estructura completa del sidebar.
+
+        En la parte 
+        """
+
         # Crear los grupos
-        groups = [self._build_group(group) for group in self._sidebar_content.groups]
-        
+        groups = [
+            self._build_group(group)
+            for group in self._sidebar_content.groups
+        ]
+
         # Crear el contenido principal (área scrollable)
         content = ft.Container(
             content=ft.Column(
@@ -184,10 +202,10 @@ class Sidebar(ft.Container):
             expand=True,
             padding=ft.padding.symmetric(vertical=8),
         )
-        
+
         # Crear el pie de página
         footer = self._build_footer()
-        
+
         # Ensamblar todo
         return ft.Column(
             controls=[
