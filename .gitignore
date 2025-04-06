@@ -128,3 +128,6 @@ dmypy.json
 # Windows
 Thumbs.db
 ehthumbs.db
+
+# El archivo main.py
+main.py
