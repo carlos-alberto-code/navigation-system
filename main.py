@@ -247,7 +247,6 @@ def main(page: ft.Page):
     # Crear la barra lateral
     sidebar = Sidebar(
         company_name="Jumpingkids",
-        icon_company=ft.Icons.RUN_CIRCLE,
         sidebar_content=sidebar_content,
         on_select=on_view_selected,
         default_selected=INICIO,
