@@ -73,7 +73,7 @@ class Sidebar(ft.Container):
         on_select= None,
         default_selected: str | None = None,
         width: int = 250,
-        bgcolor=ft.Colors.BLUE_GREY_900,
+        bgcolor: ft.Colors | None = None,
     ) -> None:
         self._company_name = company_name
         self._sidebar_content = sidebar_content
@@ -148,12 +148,12 @@ class Sidebar(ft.Container):
         return ft.Container(
             content=ft.Text(
                 value=f"Versión 1.0.0 • © 2025 {self._company_name}",
-                color=ft.Colors.with_opacity(0.5, ft.Colors.WHITE),
+                # color=ft.Colors.with_opacity(0.5, ft.Colors.WHITE),
                 size=12,
                 text_align=ft.TextAlign.CENTER,
             ),
             padding=ft.padding.all(15),
-            border=ft.border.only(top=ft.BorderSide(1, ft.Colors.with_opacity(0.1, ft.Colors.WHITE))),
+            # border=ft.border.only(top=ft.BorderSide(1, ft.Colors.with_opacity(0.1, ft.Colors.WHITE))),
         )
 
     def _build_group(self, group: SidebarGroup) -> ft.Column:
@@ -164,7 +164,7 @@ class Sidebar(ft.Container):
                 ft.Container(
                     content=ft.Text(
                         value=group.title.upper(),
-                        color=ft.Colors.with_opacity(0.5, ft.Colors.WHITE),
+                        # color=ft.Colors.with_opacity(0.5, ft.Colors.WHITE),
                         size=12,
                         weight=ft.FontWeight.BOLD,
                     ),

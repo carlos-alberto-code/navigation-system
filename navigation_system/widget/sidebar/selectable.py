@@ -15,8 +15,8 @@ class Selectable(ft.Container):
         label: str,
         icon: ft.Icons,
         on_click=None,
-        selected_color: ft.Colors = ft.Colors.BLUE_GREY_600,
-        hover_color: ft.Colors = ft.Colors.BLUE_GREY_800,
+        selected_color: ft.Colors | None = None,
+        hover_color: ft.Colors | None = None,
     ) -> None:
         self._label = label
         self._icon_text = IconText(label, icon)

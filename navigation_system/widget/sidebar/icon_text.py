@@ -20,8 +20,8 @@ class IconText(ft.Row):
         self,
         label: str,
         icon: ft.Icons,
-        selected_color: ft.Colors = ft.Colors.WHITE,
-        default_color: ft.Colors = ft.Colors.WHITE70,
+        selected_color: ft.Colors | None = None,
+        default_color: ft.Colors | None = None,
         size: int = 16,
     ) -> None:
         self._label = label
